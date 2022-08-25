@@ -1,0 +1,19 @@
+from django.apps import AppConfig
+
+
+class NewsportalConfig(AppConfig):
+    default_auto_field = 'django.db.models.BigAutoField'
+    name = 'NewsPortal'
+
+
+    def ready(self):
+        from .tasks import send_mail
+        from .scheduler import Appointment_scheduler
+        print('привет')
+        Appointment_scheduler.add_job(
+            id = 'mail send',
+            func = send_mail,
+            trigger = 'interval',
+            seconds = 40
+        )
+        Appointment_scheduler.start()
